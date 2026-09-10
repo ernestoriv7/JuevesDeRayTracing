@@ -4,6 +4,8 @@
 #include "sphere.h"
 #include "vector.h"
 
+Vector ray_origin = {0, 0, 0};
+
 Color calculate_diffuse_lighting(Vector normal, Vector light_direction, Color sphere_color) {
     float brightness = fmaxf(vector_dot(normal, light_direction), 0.0f);
     Color result;
@@ -13,7 +15,12 @@ Color calculate_diffuse_lighting(Vector normal, Vector light_direction, Color sp
     return result;
 }
 
-Color calculate_color(Vector ray_origin, Vector ray_direction, Sphere *spheres, int sphere_count, Vector light_position, int use_diffuse_lighting) {
+Color calculate_color(Vector ray_origin, 
+                      Vector ray_direction, 
+                      Sphere *spheres, 
+                      int sphere_count, 
+                      Vector light_position, 
+                      int use_diffuse_lighting) {
     Color background = {0, 0, 0};
 
     float closest_t = INFINITY;
@@ -41,14 +48,25 @@ Color calculate_color(Vector ray_origin, Vector ray_direction, Sphere *spheres, 
     return calculate_diffuse_lighting(normal, light_dir, closest_sphere->color);
 }
 
-void render_scene(Color *pixels, int width, int height, Sphere *spheres, int sphere_count, Vector light_position, int use_diffuse_lighting) {
+void render_scene(Color *pixels, 
+                  int width, 
+                  int height, 
+                  Sphere *spheres, 
+                  int sphere_count, 
+                  Vector light_position, 
+                  int use_diffuse_lighting) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            Vector ray_origin = {0, 0, 50};
+            Vector ray_origin = {0, 0, 0};
             Vector ray_dir = {(float)x / width - 0.5f, (float)y / height - 0.5f, -1};
             ray_dir = vector_normalize(ray_dir);
 
-            pixels[y * width + x] = calculate_color(ray_origin, ray_dir, spheres, sphere_count, light_position, use_diffuse_lighting);
+            pixels[y * width + x] = calculate_color(ray_origin, 
+                                                    ray_dir, 
+                                                    spheres, 
+                                                    sphere_count, 
+                                                    light_position, 
+                                                    use_diffuse_lighting);
         }
     }
 }
